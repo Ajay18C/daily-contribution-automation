@@ -32,6 +32,12 @@ idna==3.11
     # via
     #   anyio
     #   yarl
+jinja2==3.1.6
+    # via skilltap-automation (pyproject.toml)
+markupsafe==3.0.3
+    # via jinja2
+motor==3.7.1
+    # via skilltap-automation (pyproject.toml)
 multidict==6.7.1
     # via
     #   aiohttp
@@ -41,11 +47,19 @@ propcache==0.4.1
     #   aiohttp
     #   yarl
 pydantic==2.12.5
-    # via fastapi
+    # via
+    #   fastapi
+    #   pydantic-settings
 pydantic-core==2.41.5
     # via pydantic
-pymongo==4.16.0
+pydantic-settings==2.13.1
     # via skilltap-automation (pyproject.toml)
+pymongo==4.16.0
+    # via
+    #   skilltap-automation (pyproject.toml)
+    #   motor
+python-dotenv==1.2.2
+    # via pydantic-settings
 starlette==0.52.1
     # via fastapi
 typing-extensions==4.15.0
@@ -61,6 +75,7 @@ typing-inspection==0.4.2
     # via
     #   fastapi
     #   pydantic
+    #   pydantic-settings
 uvicorn==0.42.0
     # via skilltap-automation (pyproject.toml)
 yarl==1.23.0
