@@ -50,7 +50,7 @@ class SkillTapExecutionResultModel(BaseModel):
     def validate_contributions(self):
         total = sum(c.project_contribution for c in self.contributions)
 
-        if total != 100:
+        if total != 100 and self.execution_status == ExecutionStatus.SUCCESS:
             raise ValueError(f"Total contribution must be 100, got {total}")
 
         names = [c.project_name for c in self.contributions]

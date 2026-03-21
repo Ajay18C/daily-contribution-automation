@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Entry History</title>
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Reset & Design Tokens */
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.1);
+            --failed: #ef4444;
+            --failed-bg: rgba(239, 68, 68, 0.1);
+            --pending: #f59e0b;
+            --pending-bg: rgba(245, 158, 11, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 15% 0%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 100%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        /* Header Aesthetics */
+        .glass-header {
+            margin-bottom: 2.5rem;
+            animation: fadeDown 0.6s ease-out;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-content p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Insights Stats */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            animation: fadeUp 0.6s forwards 0.1s;
+            opacity: 0;
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .insight-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-value {
+            font-size: 1.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .insight-subtext {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* List Layout */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #e2e8f0;
+            animation: fadeUp 0.6s forwards 0.2s;
+            opacity: 0;
+        }
+
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* List Row */
+        .list-row {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem 1.75rem;
+            display: grid;
+            grid-template-columns: 140px 100px 1fr;
+            align-items: center;
+            gap: 1.5rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeUp 0.5s forwards;
+        }
+
+        .list-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+            box-shadow: -4px 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .row-date {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+
+        /* Status Badge */
+        .status {
+            padding: 0.35rem 0.85rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border: 1px solid transparent;
+            width: fit-content;
+        }
+
+        .status[data-status="Success"] {
+            background: var(--success-bg);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .status[data-status="Failed"] {
+            background: var(--failed-bg);
+            color: var(--failed);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .status[data-status="Pending"] {
+            background: var(--pending-bg);
+            color: var(--pending);
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status[data-status="Success"] .status-dot {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .status[data-status="Failed"] .status-dot {
+            background: var(--failed);
+            box-shadow: 0 0 10px var(--failed);
+        }
+
+        .status[data-status="Pending"] .status-dot {
+            background: var(--pending);
+            box-shadow: 0 0 10px var(--pending);
+        }
+
+        /* Contributions Breakdown inline tags */
+        .contributions-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .project-tag {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            color: #d8b4fe;
+            padding: 0.3rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .project-tag:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .tag-value {
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .no-data-tag {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .insights-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .list-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .contributions-wrapper {
+                justify-content: flex-start;
+            }
+
+            .list-row .status {
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header class="glass-header">
+            <div class="header-content">
+                <h1>Time Entry Log</h1>
+                <p>Aggregating daily chronological automation data via Jinja SSR</p>
+            </div>
+        </header>
+
+        <!-- Insights Section -->
+        <div class="insights-grid">
+            <div class="insight-card">
+                <div class="insight-label">Days Tracked</div>
+                <div class="insight-value" id="stat-days">{{ insights.total_days }}</div>
+                <div class="insight-subtext">Total recorded entries</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-label">Success Rate</div>
+                <div class="insight-value" id="stat-rate">{{ insights.success_rate }}%</div>
+                <div class="insight-subtext">Successfully automated entries</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-label">Top Focus</div>
+                <div class="insight-value" id="stat-top-project" style="font-size: 1.25rem; word-break: break-word;">{{
+                    insights.top_project }}</div>
+                <div class="insight-subtext">Project with most contributions</div>
+            </div>
+        </div>
+
+        <!-- Detailed History List -->
+        <h2 class="section-title">Entry History</h2>
+        <div id="list-container" class="list-container">
+            {% for entry in entries %}
+            <div class="list-row" style="animation-delay: {{ entry.delay }}s;">
+                <div class="row-date">{{ entry.time_log_date }}</div>
+                <div>
+                    <div class="status" data-status="{{ entry.execution_status }}">
+                        <div class="status-dot"></div>
+                        {{ entry.execution_status }}
+                    </div>
+                </div>
+                <div class="contributions-wrapper">
+                    {% if not entry.contributions %}
+                    <span class="no-data-tag">No contributions recorded</span>
+                    {% else %}
+                    {% for c in entry.contributions %}
+                    <div class="project-tag">
+                        {{ c.project_name }}
+                        <span class="tag-value">{{ c.project_contribution }}</span>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if not entries %}
+            <div class="list-row" style="text-align: center; justify-content: center; grid-template-columns: 1fr;">
+                <span class="no-data-tag">No entries found yet!</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Minimal JS purely for slick number counting animation effect -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            animateValue("stat-days", 0, parseInt("{{ insights.total_days }}", 10), 800);
+            animateValue("stat-rate", 0, parseInt("{{ insights.success_rate }}", 10), 800, "%");
+        });
+
+        function animateValue(id, start, end, duration, suffix = "") {
+            const obj = document.getElementById(id);
+            if (end === 0 || isNaN(end)) { obj.textContent = "0" + suffix; return; }
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                obj.textContent = Math.floor(easeOut * (end - start) + start) + suffix;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    obj.textContent = end + suffix;
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+</body>
+
+</html>
