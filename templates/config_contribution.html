@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contribution Configuration</title>
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --success: #10b981;
+            --failed: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 15% 0%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 100%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        .glass-header {
+            margin-bottom: 2rem;
+            animation: fadeDown 0.6s ease-out;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--failed);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 1rem;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--failed);
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            animation: fadeUp 0.6s forwards;
+            margin-bottom: 2rem;
+        }
+
+        input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .project-row {
+            display: grid;
+            grid-template-columns: 1fr 120px auto;
+            gap: 1rem;
+            align-items: center;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            animation: fadeUp 0.3s;
+        }
+
+        .project-row:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .total-tracker {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .percentage-value {
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            font-size: 1.4rem;
+        }
+
+        .total-valid {
+            color: var(--success);
+        }
+
+        .total-invalid {
+            color: var(--failed);
+        }
+
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="glass-header">
+            <div class="header-content">
+                <h1>Global Contribution Config</h1>
+            </div>
+            <a href="/" class="btn btn-secondary">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Dashboard
+            </a>
+        </header>
+
+        <form class="form-card" id="config-form">
+            <div class="section-title">
+                <span>Default Apportionment</span>
+                <button type="button" class="btn btn-secondary" onclick="addProjectRow()"
+                    style="padding: 0.5rem 1rem; font-size: 0.8rem;">
+                    + Add Project
+                </button>
+            </div>
+
+            <div id="projects-container"></div>
+
+            <div class="total-tracker">
+                <span>Total Contribution Rule:</span>
+                <span class="percentage-value" id="total-percentage">0%</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="save-btn" disabled>
+                Save Global Configuration
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const container = document.getElementById('projects-container');
+        const totalDisplay = document.getElementById('total-percentage');
+        const saveBtn = document.getElementById('save-btn');
+
+        // Inject configuration fully dynamically from Jinja Server Side Render context
+        // This parses the nested DB python arrays seamlessly into client-side window memory 
+        let projects = {{ projects_config | tojson | safe }};
+
+        function recalculate() {
+            let total = 0;
+            document.querySelectorAll('.contrib-input').forEach(input => {
+                total += (parseInt(input.value) || 0);
+            });
+
+            totalDisplay.innerText = `${total}%`;
+
+            if (total === 100) {
+                totalDisplay.className = "percentage-value total-valid";
+                saveBtn.disabled = false;
+            } else {
+                totalDisplay.className = "percentage-value total-invalid";
+                saveBtn.disabled = true;
+            }
+        }
+
+        function addProjectRow(name = "", val = 0) {
+            const row = document.createElement('div');
+            row.className = 'project-row';
+            row.innerHTML = `
+                <div style="margin:0;">
+                    <input type="text" placeholder="Project ID" value="${name}" required class="name-input">
+                </div>
+                <div style="margin:0;">
+                    <input type="number" placeholder="%" value="${val}" min="0" max="100" class="contrib-input" oninput="recalculate()" required>
+                </div>
+                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove(); recalculate();">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+            `;
+            container.appendChild(row);
+            recalculate();
+        }
+
+        // Map backend schema matching strictly to Pydantic: (.projectId and .percentage)
+        projects.forEach(p => addProjectRow(p.projectId, p.percentage));
+
+        document.getElementById('config-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const payload = { config: [] };
+
+            document.querySelectorAll('.project-row').forEach(row => {
+                const name = row.querySelector('.name-input').value;
+                const val = parseInt(row.querySelector('.contrib-input').value);
+                payload.config.push({ projectId: name, percentage: val });
+            });
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = "Saving Application Defaults...";
+
+            fetch('/api/config-contribution', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(response => {
+                if (response.ok) {
+                    saveBtn.innerHTML = "System Configuration Saved!";
+                    saveBtn.style.background = "var(--success)";
+                    setTimeout(() => window.location.href = "/", 1000);
+                } else {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = "Error saving";
+                }
+            }).catch(error => {
+                console.error(error);
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = "Network Error";
+            });
+        });
+    </script>
+</body>
+
+</html>
