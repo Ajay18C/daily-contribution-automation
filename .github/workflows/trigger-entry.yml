@@ -1,0 +1,13 @@
+name: Trigger Daily Endpoint
+
+on:
+  schedule:
+    - cron: '30 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call API
+        run: curl -X POST https://daily-contribution-automation.vercel.app/api/fill-latest
