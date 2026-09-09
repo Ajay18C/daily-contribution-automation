@@ -2,7 +2,7 @@ name: Trigger Daily Endpoint
 
 on:
   schedule:
-    - cron: '30 6 * * 2-6'
+    - cron: '30 5 * * 2-6'
   workflow_dispatch:
 
 jobs:
